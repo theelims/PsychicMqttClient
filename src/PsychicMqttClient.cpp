@@ -17,6 +17,7 @@ PsychicMqttClient::PsychicMqttClient() : _mqtt_cfg()
 
 PsychicMqttClient::~PsychicMqttClient()
 {
+  disconnect();
   esp_mqtt_client_destroy(_client);
   free(&_mqtt_cfg);
 }
@@ -188,16 +189,17 @@ void PsychicMqttClient::connect()
   if (_client != nullptr)
     _client = esp_mqtt_client_init(&_mqtt_cfg);
   else
-    _client.esp_mqtt_set_config(&_mqtt_cfg);
+    ESP_ERROR_CHECK_WITHOUT_ABORT(esp_mqtt_set_config(_client, &_mqtt_cfg));
 
   esp_mqtt_client_register_event(_client, MQTT_EVENT_ANY, _onMqttEventStatic, this);
-  ESP_ERROR_CHECK(esp_mqtt_client_start(_client));
+  ESP_ERROR_CHECK_WITHOUT_ABORT(esp_mqtt_client_start(_client));
   ESP_LOGI(TAG, "MQTT client started.");
 }
 
 void PsychicMqttClient::disconnect()
 {
   ESP_LOGI(TAG, "Disconnecting MQTT client.");
+  esp_mqtt_client_disconnect(_client);
   esp_mqtt_client_stop(_client);
 }
 

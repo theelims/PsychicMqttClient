@@ -21,7 +21,7 @@ The API is very similar to [AsyncMqttClient](https://github.com/marvinroger/asyn
 
 ## Usage
 
-MQTT has never been easier to use. Instantiate the MQTT client, set the server URI, subscribe to a topic with the `onTopic()` event handler. Easy to use with a lambda function where you can work with the received payload. Connect the MQTT client to the server and you're set. Publish works as expected from any other MQTT client.
+MQTT has never been easier to use. Instantiate the MQTT client, set the server URI, and subscribe to a topic with the `onTopic()` event handler. Easy to use with a lambda function where you can work with the received payload. Connect the MQTT client to the server and you're set. Publish works as expected from any other MQTT client.
 
 ```cpp
 #include <PsychicMqttClient.h>
@@ -64,7 +64,7 @@ Using SSL/TLS encryption can be a little bit tedious, but with this MQTT client 
 
 If you only need to connect to one specific MQTT server, which will never change, directly embedding the certificate into the source file is the easiest method.
 
-You can get the root certificate directly from the browser. Open the domain of your MQTT server and verify the SSL encryption by pressing on the icon left of the URL. On Chrome press on `Connection is Secure` > `Certificate is Valid` to open the certificate dialog. (Works similar on all other browsers.)
+You can get the root certificate directly from the browser. Open the domain of your MQTT server and verify the SSL encryption by pressing on the icon left to the URL. On Chrome press on `Connection is Secure` > `Certificate is Valid` to open the certificate dialog. (Works similar on all other browsers.)
 
 ![Chrome Screenshot](docs/resources/Browser_certificate.PNG)
 
@@ -104,7 +104,7 @@ const char *eclipse_root_ca = "-----BEGIN CERTIFICATE-----\n"
                               "-----END CERTIFICATE-----\n";
 ```
 
-Where setting the server URI just add the reference to the root CA certificate:
+When setting the server URI just add the reference to the root CA certificate:
 
 ```cpp
 mqttClient.setCACert(eclipse_root_ca);
@@ -116,7 +116,7 @@ That's it. Your MQTT connection is encrypted.
 
 If you require more universal connectivity to more then one server and have different root certificate authorities you can use the python script in the `/scripts` folder. It will either download a standard set of the most popular root CA's or use a set of certificates in _.PEM or _.DEM file format located in the folder `/ssl_certs`. For the download either the Mozilla collection at [https://curl.se/ca/cacert.pem](https://curl.se/ca/cacert.pem) is used or a collection curated by [Adafruit](https://github.com/adafruit/certificates/) specifically adjusted for the constraints of embedded systems.
 
-Copy the script from the library folder into your platformio project folder `./scripts` so that it can be found. In the `platformio.ini` add teh following lines
+Copy the script from the library folder into your platformio project folder `./scripts` so that it can be found. In the `platformio.ini` add the following lines
 
 ```ini
 extra_scripts = pre:scripts/generate_cert_bundle.py
@@ -154,6 +154,9 @@ mqttClient.attachArduinoCACertBundle();
 ```
 
 Otherwise the bundle will be overwritten by the MQTT client with unwanted side effects.
+
+> [!IMPORTANT]  
+> There is currently a bug in mbedtls which prevents the proper certificate validation for all certificates signed by `Let's encrypt`. For this reason working directly with the ISRG Root X1 CA certificate or the bundle downloaded from Mozilla might result in SSL failing. You need to include the DST Root CA X3 certificate as well. This is currently only done by the Adafruit repository. You can [read](https://github.com/adafruit/certificates/pull/1) here and [here](https://github.com/espressif/arduino-esp32/issues/8626) about the details.
 
 ## Advanced Usage
 

@@ -91,12 +91,6 @@ PsychicMqttClient &PsychicMqttClient::attachArduinoCACertBundle(bool attach)
   return *this;
 }
 
-PsychicMqttClient &PsychicMqttClient::useGlobalCAStore(bool useGlobalCAStore)
-{
-  _mqtt_cfg.use_global_ca_store = useGlobalCAStore;
-  return *this;
-}
-
 PsychicMqttClient &PsychicMqttClient::setCredentials(const char *username, const char *password)
 {
   _mqtt_cfg.username = username;
@@ -157,7 +151,8 @@ PsychicMqttClient &PsychicMqttClient::onTopic(const char *topic, int qos, OnMess
 {
   OnMessageUserCallback_t subscription = {strcpy((char *)malloc(strlen(topic) + 1), topic), qos, callback};
   _onMessageUserCallbacks.push_back(subscription);
-  subscribe(topic, qos);
+  if (_connected)
+    subscribe(topic, qos);
   return *this;
 }
 
@@ -186,7 +181,7 @@ void PsychicMqttClient::connect()
     return;
   }
 
-  if (_client != nullptr)
+  if (_client == nullptr)
     _client = esp_mqtt_client_init(&_mqtt_cfg);
   else
     ESP_ERROR_CHECK_WITHOUT_ABORT(esp_mqtt_set_config(_client, &_mqtt_cfg));
@@ -443,21 +438,29 @@ void PsychicMqttClient::_onError(esp_mqtt_event_handle_t &event)
 
 bool PsychicMqttClient::_isTopicMatch(const char *topic, const char *subscription)
 {
+  ESP_LOGV(TAG, "Match topic: %s with subscription: %s", topic, subscription);
+
+  // make local copies of the topic and subscription so we're not modifying the originals
+  char topicCopy[strlen(topic) + 1];
+  strcpy(topicCopy, topic);
+  char subscriptionCopy[strlen(subscription) + 1];
+  strcpy(subscriptionCopy, subscription);
+
   // Check if the topic is a wildcard
-  if (strcmp(subscription, "#") == 0 || strcmp(subscription, "+") == 0)
+  if (strcmp(subscriptionCopy, "#") == 0 || strcmp(subscriptionCopy, "+") == 0)
   {
     return true;
   }
 
   // Check if the topic is a simple match
-  if (strcmp(topic, subscription) == 0)
+  if (strcmp(topicCopy, subscriptionCopy) == 0)
   {
     return true;
   }
 
   // Check if the topic is a wildcard match
-  char *topicToken = strtok((char *)topic, "/");
-  char *subscriptionToken = strtok((char *)subscription, "/");
+  char *topicToken = strtok((char *)topicCopy, "/");
+  char *subscriptionToken = strtok((char *)subscriptionCopy, "/");
   while (topicToken != NULL && subscriptionToken != NULL)
   {
     if (strcmp(subscriptionToken, "#") == 0)

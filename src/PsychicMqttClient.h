@@ -1,4 +1,35 @@
 #pragma once
+/**
+ *   PsychicMqttClient
+ *
+ *   Fully featured async MQTT 3.1.1 client for ESP32 with support for SSL/TLS
+ *   and MQTT over WS. Uses the ESP-IDF MQTT client library under the hood and
+ *   adds a powerful but easy to use API on top of it. Supports MQTT over TCP,
+ *   SSL with mbedtls, MQTT over Websocket and MQTT over Websocket Secure.
+ *   https://github.com/theelims/PsychicMqttClient
+ *
+ *   MIT License
+ *
+ *   Copyright (c) 2024 elims
+ *
+ *   Permission is hereby granted, free of charge, to any person obtaining a copy
+ *   of this software and associated documentation files (the "Software"), to deal
+ *   in the Software without restriction, including without limitation the rights
+ *   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *   copies of the Software, and to permit persons to whom the Software is
+ *   furnished to do so, subject to the following conditions:
+ *
+ *   The above copyright notice and this permission notice shall be included in all
+ *   copies or substantial portions of the Software.
+ *
+ *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *   SOFTWARE.
+ */
 
 #include <functional>
 #include <vector>
@@ -126,15 +157,6 @@ public:
    * @return A reference to the PsychicMqttClient instance.
    */
   PsychicMqttClient &attachArduinoCACertBundle(bool attach = true);
-
-  /**
-   * @brief The MQTT server can use the ESP-IDF global CA root certificate store. Check ESP-TLS
-   * documentation for more information.
-   *
-   * @param useGlobalCAStore Whether to use the global CA root certificate store. Defaults to true.
-   * @return A reference to the PsychicMqttClient instance.
-   */
-  PsychicMqttClient &useGlobalCAStore(bool useGlobalCAStore = true);
 
   /**
    * @brief Sets the credentials for the MQTT connection.

@@ -4,3 +4,8 @@
 *Thumbs.db
 .vscode
 */src/certs
+*/ssl_certs
+*.bin
+*.pem
+*.der
+

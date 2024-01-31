@@ -18,6 +18,7 @@ The API is very similar to [AsyncMqttClient](https://github.com/marvinroger/asyn
 - Flexible and powerful event-based API
   - `onTopic()` event which calls a callback every time a message on a specific subscribed topic is received
 - Handles reconnects automatically
+- Automatically embeds a Root CA Bundle into the binary on platformio
 
 ## Usage
 
@@ -51,10 +52,8 @@ void loop()
 
 The client will handle all the connection details on its own. It will attempt to reconnect automatically, so you don't need to take care of this.
 
-### Important
-
-- No blocking code inside event handler functions. These must return fast. Especially no `delay()`, hardware functions or any other blocking code. Store the results and notify your main loop to take actions. If applicable use FreeRTOS toolings like queues or semaphores to protect against race conditions.
-- The preferred method to take action on received messages is the `onTopic()` event handler. It takes care of subscriptions automatically.
+> [!IMPORTANT]
+> No blocking code inside event handler functions. These must return fast. Especially no `delay()`, hardware functions or any other blocking code. Store the results and notify your main loop to take actions. If applicable use FreeRTOS toolings like queues or semaphores to protect against race conditions.
 
 ## SSL/TLS Encryption
 
@@ -144,7 +143,7 @@ when configuring the MQTT client instance before connecting.
 
 #### Together with WiFiClientSecure
 
-If you use WiFiClientSecure in your application as well, it can be configured to use the X509 certificate bundle as well. In that case you should use WiFiClientSecure to instantiate the certificate bundle before calling `attachArduinoCACertBundle()`.
+If you use WiFiClientSecure in your application, it can be configured to use the X509 certificate bundle as well. In that case you should use WiFiClientSecure to instantiate the certificate bundle before calling `attachArduinoCACertBundle()`.
 
 ```cpp
 WiFiClientSecure client;

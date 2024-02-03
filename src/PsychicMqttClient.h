@@ -342,6 +342,7 @@ private:
   esp_mqtt_client_config_t _mqtt_cfg;
   esp_mqtt_error_codes_t _lastError;
   bool _connected = false;
+  bool _stopMqttClient = false;
 
   char *_buffer = nullptr;
   char *_topic = nullptr;

@@ -2,13 +2,13 @@
 
 Fully featured async MQTT 3.1.1 client for ESP32 with support for SSL/TLS and MQTT over WS. Uses the ESP-IDF MQTT client library under the hood and adds a powerful but easy to use API on top of it. Supports MQTT over TCP, SSL with mbedtls, MQTT over Websocket and MQTT over Websocket Secure.
 
-There are countless popular MQTT client libraries available for Arduino and ESP32. Like [AsyncMqttClient](https://github.com/marvinroger/async-mqtt-client) by Marvin Roger, [pubsubclient](https://github.com/knolleary/pubsubclient) by knolleary and [arduino-mqtt](https://github.com/256dpi/arduino-mqtt) by 256dpi. They are widely used, but all have their unique limitations. Like not supporting all QoS levels, limited message size to the buffer size and none of them has a practical support for SSL/TLS. Also MQTT over websocket is missing in all of them.
+There are countless popular MQTT client libraries available for Arduino and ESP32. Like [AsyncMqttClient](https://github.com/marvinroger/async-mqtt-client) by Marvin Roger, [pubsubclient](https://github.com/knolleary/pubsubclient) by knolleary and [arduino-mqtt](https://github.com/256dpi/arduino-mqtt) by 256dpi. They are widely used, but all have their unique limitations. Like not supporting all QoS levels, limited message size and none of them has a practical support for SSL/TLS. Also MQTT over websocket is missing in all of them.
 
 The API is very similar to [AsyncMqttClient](https://github.com/marvinroger/async-mqtt-client) for the ESP32 by Marvin Roger, so that this library can be used almost as a drop-in replacement. Only minor adjustments are necessary.
 
 ## Features
 
-- Supports MQTT 3.1.1 with QoS 0, QoS 1 and QoS 3
+- Supports MQTT 3.1.1 with QoS 0, QoS 1 and QoS 2
 - Compatible with all ESP32 variants (ESP32, ESP32-S2, ESP32-S3, ESP32-C3, ESP32-C6, ...)
 - Supports MQTT over TCP and MQTT over websocket
 - Full support for SSL/TSL encryption - for both MQTT over TCP and MQTT over WS
@@ -18,7 +18,7 @@ The API is very similar to [AsyncMqttClient](https://github.com/marvinroger/asyn
 - Flexible and powerful event-based API
   - `onTopic()` event which calls a callback every time a message on a specific subscribed topic is received
 - Handles reconnects automatically
-- Automatically embeds a Root CA Bundle into the binary on platformio
+- Automatically embeds a X509 Root CA Bundle into the binary on platformio
 
 ## Usage
 
@@ -57,7 +57,7 @@ The client will handle all the connection details on its own. It will attempt to
 
 ## SSL/TLS Encryption
 
-Using SSL/TLS encryption can be a little bit tedious, but with this MQTT client there are different ways to enable SSL/TLS. You can include a single PEM certificate in the code, or create a bundle of certificates with a platformio script. These are embedded into the binary and offer you universal SSL/TLS support for a wide range of servers without headaches.
+Using SSL/TLS encryption can be a little bit tedious, but with this MQTT client this is exceptionally easy. You can include a single PEM certificate in the code, or create a bundle of certificates with a platformio script. These are embedded into the binary and offer you universal SSL/TLS support for a wide range of servers without headaches.
 
 ### Single CA Root Certificate
 
@@ -109,11 +109,11 @@ When setting the server URI just add the reference to the root CA certificate:
 mqttClient.setCACert(eclipse_root_ca);
 ```
 
-That's it. Your MQTT connection is encrypted.
+That's it. Your MQTT connection is encrypted now.
 
-### CA Root Certificate Bundles
+### X509 CA Root Certificate Bundles
 
-If you require more universal connectivity to more then one server and have different root certificate authorities you can use the python script in the `/scripts` folder. It will either download a standard set of the most popular root CA's or use a set of certificates in _.PEM or _.DEM file format located in the folder `/ssl_certs`. For the download either the Mozilla collection at [https://curl.se/ca/cacert.pem](https://curl.se/ca/cacert.pem) is used or a collection curated by [Adafruit](https://github.com/adafruit/certificates/) specifically adjusted for the constraints of embedded systems.
+If you require universal connectivity to more then one server with different root certificate authorities you can use the python script in the `/scripts` folder. It will either download a standard set of the most popular root CA's or use a set of certificates in \*.PEM or \*.DEM file format located in the folder `/ssl_certs`. For the download either the Mozilla collection at [https://curl.se/ca/cacert.pem](https://curl.se/ca/cacert.pem) is used or a collection curated by [Adafruit](https://github.com/adafruit/certificates/) specifically adjusted for the constraints of embedded systems.
 
 Copy the script from the library folder into your platformio project folder `./scripts` so that it can be found. In the `platformio.ini` add the following lines
 
@@ -126,7 +126,7 @@ board_ssl_cert_source = adafruit
 board_build.embed_files = src/certs/x509_crt_bundle.bin
 ```
 
-and configure `board_ssl_cert_source` to your needs. If you use your own collection copy the _.PEM / _.DEM certificate files to `./sss_certs`. The platformio build system will automatically compile the certificates into a binary file and embed them into the final binary. This can be later accessed in your code by
+and configure `board_ssl_cert_source` to your needs. If you use your own collection copy the \*.PEM / \*.DEM certificate files to `./ssl_certs`. The platformio build system will automatically compile the certificates into a binary file and embed them into the final binary. This can be later accessed in your code by
 
 ```cpp
 extern const uint8_t rootca_crt_bundle_start[] asm("_binary_src_certs_x509_crt_bundle_bin_start");
@@ -155,11 +155,11 @@ mqttClient.attachArduinoCACertBundle();
 Otherwise the bundle will be overwritten by the MQTT client with unwanted side effects.
 
 > [!IMPORTANT]  
-> There is currently a bug in mbedtls which prevents the proper certificate validation for all certificates signed by `Let's encrypt`. For this reason working directly with the ISRG Root X1 CA certificate or the bundle downloaded from Mozilla might result in SSL failing. You need to include the DST Root CA X3 certificate as well. This is currently only done by the Adafruit repository. You can [read](https://github.com/adafruit/certificates/pull/1) here and [here](https://github.com/espressif/arduino-esp32/issues/8626) about the details.
+> Currently there is a bug in mbedtls which prevents the proper certificate validation for all certificates signed by `Let's encrypt`. For this reason working directly with the ISRG Root X1 CA certificate or the bundle downloaded from Mozilla might result in SSL failing. You need to include the DST Root CA X3 certificate as well. Cirrently this is only done by the Adafruit repository. You can [read](https://github.com/adafruit/certificates/pull/1) here and [here](https://github.com/espressif/arduino-esp32/issues/8626) about the details.
 
 ## Advanced Usage
 
-Check the commented header file and the `FullyFeatured` example for a complete list of all event handlers and configuration option. You can even get access to the ESP-IDF MQTT Client configuration object, should you need parameters not broken out to the API.
+Check the commented header file and the `FullyFeatured` example for a complete list of all event handlers and configuration options. You can even get access to the ESP-IDF MQTT Clients' configuration object, should you need parameters not broken out to the API.
 
 ## License
 

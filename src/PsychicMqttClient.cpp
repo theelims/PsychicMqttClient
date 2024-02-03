@@ -193,8 +193,22 @@ void PsychicMqttClient::connect()
 
 void PsychicMqttClient::disconnect()
 {
+  if (_client == nullptr)
+  {
+    ESP_LOGW(TAG, "MQTT client not started.");
+    return;
+  }
+
   ESP_LOGI(TAG, "Disconnecting MQTT client.");
+  _stopMqttClient = false;
   esp_mqtt_client_disconnect(_client);
+
+  // Wait for all disconnect events to be processed
+  while (!_stopMqttClient)
+  {
+    vTaskDelay(10 / portTICK_PERIOD_MS);
+  }
+
   esp_mqtt_client_stop(_client);
 }
 
@@ -309,6 +323,7 @@ void PsychicMqttClient::_onDisconnect(esp_mqtt_event_handle_t &event)
   {
     callback(event->session_present);
   }
+  _stopMqttClient = true;
 }
 
 void PsychicMqttClient::_onSubscribe(esp_mqtt_event_handle_t &event)

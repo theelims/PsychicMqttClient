@@ -218,8 +218,16 @@ void PsychicMqttClient::disconnect()
 
 int PsychicMqttClient::subscribe(const char *topic, int qos)
 {
-  ESP_LOGI(TAG, "Subscribing to topic %s with QoS %d", topic, qos);
-  return esp_mqtt_client_subscribe(_client, topic, qos);
+  if (_connected)
+  {
+    ESP_LOGI(TAG, "Subscribing to topic %s with QoS %d", topic, qos);
+    return esp_mqtt_client_subscribe(_client, topic, qos);
+  }
+  else
+  {
+    ESP_LOGW(TAG, "MQTT client not connected. Dropping subscription to topic %s with QoS %d.", topic, qos);
+    return -1;
+  }
 }
 
 int PsychicMqttClient::unsubscribe(const char *topic)

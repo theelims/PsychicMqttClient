@@ -199,17 +199,21 @@ void PsychicMqttClient::disconnect()
     return;
   }
 
-  ESP_LOGI(TAG, "Disconnecting MQTT client.");
-  _stopMqttClient = false;
-  esp_mqtt_client_disconnect(_client);
-
-  // Wait for all disconnect events to be processed
-  while (!_stopMqttClient)
+  if (_connected)
   {
-    vTaskDelay(10 / portTICK_PERIOD_MS);
+    ESP_LOGI(TAG, "Disconnecting MQTT client.");
+    _stopMqttClient = false;
+    esp_mqtt_client_disconnect(_client);
+
+    // Wait for all disconnect events to be processed
+    while (!_stopMqttClient)
+    {
+      vTaskDelay(10 / portTICK_PERIOD_MS);
+    }
   }
 
   esp_mqtt_client_stop(_client);
+  ESP_LOGI(TAG, "MQTT client stopped.");
 }
 
 int PsychicMqttClient::subscribe(const char *topic, int qos)

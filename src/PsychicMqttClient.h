@@ -39,7 +39,7 @@
 #include "esp_crt_bundle.h"
 
 #ifndef ARDUINO_ARCH_ESP32
-#error “This library only supports boards with an ESP32 processor.”
+#error "This library only supports boards with an ESP32 processor."
 #endif
 
 // user callbacks

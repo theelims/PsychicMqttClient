@@ -19,7 +19,6 @@ PsychicMqttClient::~PsychicMqttClient()
 {
   disconnect();
   esp_mqtt_client_destroy(_client);
-  free(&_mqtt_cfg);
 }
 
 PsychicMqttClient &PsychicMqttClient::setKeepAlive(int keepAlive)

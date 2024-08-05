@@ -65,11 +65,11 @@ PsychicMqttClient &PsychicMqttClient::setCACert(const char *rootCA, size_t rootC
   return *this;
 }
 
-PsychicMqttClient &PsychicMqttClient::setCACertBundle(const uint8_t *bundle)
+PsychicMqttClient &PsychicMqttClient::setCACertBundle(const uint8_t *bundle, size_t bundleLen)
 {
   if (bundle != nullptr)
   {
-    esp_crt_bundle_set(bundle, strlen((const char*)bundle));
+    esp_crt_bundle_set(bundle, bundleLen);
     _mqtt_cfg.broker.verification.crt_bundle_attach = esp_crt_bundle_attach;
   }
   else

@@ -155,7 +155,7 @@ mqttClient.attachArduinoCACertBundle();
 Otherwise the bundle will be overwritten by the MQTT client with unwanted side effects.
 
 > [!IMPORTANT]  
-> Currently there is a bug in mbedtls which prevents the proper certificate validation for all certificates signed by `Let's encrypt`. For this reason working directly with the ISRG Root X1 CA certificate or the bundle downloaded from Mozilla might result in SSL failing. You need to include the DST Root CA X3 certificate as well. Cirrently this is only done by the Adafruit repository. You can [read](https://github.com/adafruit/certificates/pull/1) here and [here](https://github.com/espressif/arduino-esp32/issues/8626) about the details.
+> Currently there is a bug in mbedtls which prevents the proper certificate validation for all certificates signed by `Let's encrypt`. For this reason working directly with the ISRG Root X1 CA certificate or the bundle downloaded from Mozilla might result in SSL failing. You need to include the DST Root CA X3 certificate as well. Currently this is only done by the Adafruit repository. You can [read](https://github.com/adafruit/certificates/pull/1) here and [here](https://github.com/espressif/arduino-esp32/issues/8626) about the details.
 
 ## Advanced Usage
 

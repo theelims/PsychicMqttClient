@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.2] - Published in PIO Registry
+
+- removed library.properties
+- updated library.json
+
 ## [0.1.1] - Stability Fixes
 
 ### Fixed

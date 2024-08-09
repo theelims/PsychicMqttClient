@@ -131,8 +131,8 @@ board_build.embed_files = src/certs/x509_crt_bundle.bin
 and configure `board_ssl_cert_source` to your needs. If you use your own collection copy the \*.PEM / \*.DEM certificate files to `./ssl_certs`. The platformio build system will automatically compile the certificates into a binary file and embed them into the final binary. This can be later accessed in your code by
 
 ```cpp
-extern const uint8_t rootca_crt_bundle_start[] asm("_binary_src_certs_x509_crt_bundle_bin_start");
-extern const uint8_t rootca_crt_bundle_end[] asm("_binary_src_certs_x509_crt_bundle_bin_end");
+extern const uint8_t rootca_crt_bundle_start[] asm("_binary_data_certs_x509_crt_bundle_bin_start");
+extern const uint8_t rootca_crt_bundle_end[] asm("_binary_data_certs_x509_crt_bundle_bin_end");
 ```
 
 To include the bundle for the MQTT client simply call

@@ -22,7 +22,7 @@ const char pass[] = "pass"; // your network password
 /**
  * Load the root certificate bundle embedded by the PIO build process
  */
-extern const uint8_t rootca_crt_bundle_start[] asm("_binary_src_certs_x509_crt_bundle_bin_start");
+extern const uint8_t rootca_crt_bundle_start[] asm("_binary_data_certs_x509_crt_bundle_bin_start");
 
 /**
  * Create a PsychicMqttClient object

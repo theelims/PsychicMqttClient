@@ -18,7 +18,6 @@
   "headers": "PsychicMQTTClient.h",
   "export": {
     "include": [
-      "docs",
       "examples",
       "scripts",
       "src",

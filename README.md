@@ -1,5 +1,7 @@
 # PsychicMqttClient
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Fully featured async MQTT 3.1.1 client for ESP32 with support for SSL/TLS and MQTT over WS. Uses the ESP-IDF MQTT client library under the hood and adds a powerful but easy to use API on top of it. Supports MQTT over TCP, SSL with mbedtls, MQTT over Websocket and MQTT over Websocket Secure.
 
 There are countless popular MQTT client libraries available for Arduino and ESP32. Like [AsyncMqttClient](https://github.com/marvinroger/async-mqtt-client) by Marvin Roger, [pubsubclient](https://github.com/knolleary/pubsubclient) by knolleary and [arduino-mqtt](https://github.com/256dpi/arduino-mqtt) by 256dpi. They are widely used, but all have their unique limitations. Like not supporting all QoS levels, limited message size and none of them has a practical support for SSL/TLS. Also MQTT over websocket is missing in all of them.

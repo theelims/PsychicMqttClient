@@ -19,64 +19,63 @@ PsychicMqttClient::~PsychicMqttClient()
 {
   disconnect();
   esp_mqtt_client_destroy(_client);
-  free(&_mqtt_cfg);
 }
 
 PsychicMqttClient &PsychicMqttClient::setKeepAlive(int keepAlive)
 {
-  _mqtt_cfg.keepalive = keepAlive;
+  _mqtt_cfg.session.keepalive = keepAlive;
   return *this;
 }
 
 PsychicMqttClient &PsychicMqttClient::setAutoReconnect(bool reconnect)
 {
-  _mqtt_cfg.disable_auto_reconnect = !reconnect;
+  _mqtt_cfg.network.disable_auto_reconnect = !reconnect;
   return *this;
 }
 
 PsychicMqttClient &PsychicMqttClient::setClientId(const char *clientId)
 {
-  _mqtt_cfg.client_id = clientId;
+  _mqtt_cfg.credentials.client_id = clientId;
   return *this;
 }
 
 PsychicMqttClient &PsychicMqttClient::setCleanSession(bool cleanSession)
 {
-  _mqtt_cfg.disable_clean_session = !cleanSession;
+  _mqtt_cfg.session.disable_clean_session = !cleanSession;
   return *this;
 }
 
 PsychicMqttClient &PsychicMqttClient::setBufferSize(int bufferSize)
 {
-  _mqtt_cfg.buffer_size = bufferSize;
+  _mqtt_cfg.buffer.size = bufferSize;
   return *this;
 }
 
 PsychicMqttClient &PsychicMqttClient::setTaskStackAndPriority(int stackSize, int priority)
 {
-  _mqtt_cfg.task_stack = stackSize;
-  _mqtt_cfg.task_prio = priority;
+  _mqtt_cfg.task.stack_size = stackSize;
+  _mqtt_cfg.task.priority = priority;
   return *this;
 }
 
 PsychicMqttClient &PsychicMqttClient::setCACert(const char *rootCA, size_t rootCALen)
 {
-  _mqtt_cfg.cert_pem = rootCA;
-  _mqtt_cfg.cert_len = rootCALen;
+  _mqtt_cfg.credentials.authentication.certificate = rootCA;
+  _mqtt_cfg.credentials.authentication.certificate_len = rootCALen;
   return *this;
 }
 
-PsychicMqttClient &PsychicMqttClient::setCACertBundle(const uint8_t *bundle)
+PsychicMqttClient &PsychicMqttClient::setCACertBundle(const uint8_t *bundle, size_t bundleLen)
 {
   if (bundle != nullptr)
   {
-    arduino_esp_crt_bundle_set(bundle);
-    _mqtt_cfg.crt_bundle_attach = arduino_esp_crt_bundle_attach;
+    esp_crt_bundle_set(bundle, bundleLen);
+    _mqtt_cfg.broker.verification.crt_bundle_attach = esp_crt_bundle_attach;
   }
   else
   {
-    arduino_esp_crt_bundle_detach(NULL);
-    _mqtt_cfg.crt_bundle_attach = NULL;
+    esp_crt_bundle_detach(NULL);
+    _mqtt_cfg.broker.verification.crt_bundle_attach = NULL;
   }
   return *this;
 }
@@ -84,35 +83,35 @@ PsychicMqttClient &PsychicMqttClient::setCACertBundle(const uint8_t *bundle)
 PsychicMqttClient &PsychicMqttClient::attachArduinoCACertBundle(bool attach)
 {
   if (attach)
-    _mqtt_cfg.crt_bundle_attach = arduino_esp_crt_bundle_attach;
+    _mqtt_cfg.broker.verification.crt_bundle_attach = esp_crt_bundle_attach;
   else
-    _mqtt_cfg.crt_bundle_attach = NULL;
+    _mqtt_cfg.broker.verification.crt_bundle_attach = NULL;
 
   return *this;
 }
 
 PsychicMqttClient &PsychicMqttClient::setCredentials(const char *username, const char *password)
 {
-  _mqtt_cfg.username = username;
+  _mqtt_cfg.credentials.username = username;
   if (password != nullptr)
-    _mqtt_cfg.password = password;
+    _mqtt_cfg.credentials.authentication.password = password;
 
   return *this;
 }
 
 PsychicMqttClient &PsychicMqttClient::setWill(const char *topic, uint8_t qos, bool retain, const char *payload, int length)
 {
-  _mqtt_cfg.lwt_topic = topic;
-  _mqtt_cfg.lwt_qos = qos;
-  _mqtt_cfg.lwt_retain = retain;
-  _mqtt_cfg.lwt_msg_len = length;
-  _mqtt_cfg.lwt_msg = payload;
+  _mqtt_cfg.session.last_will.topic = topic;
+  _mqtt_cfg.session.last_will.qos = qos;
+  _mqtt_cfg.session.last_will.retain = retain;
+  _mqtt_cfg.session.last_will.msg_len = length;
+  _mqtt_cfg.session.last_will.msg = payload;
   return *this;
 }
 
 PsychicMqttClient &PsychicMqttClient::setServer(const char *uri)
 {
-  _mqtt_cfg.uri = uri;
+  _mqtt_cfg.broker.address.uri = uri;
   return *this;
 }
 
@@ -175,7 +174,7 @@ bool PsychicMqttClient::connected()
 
 void PsychicMqttClient::connect()
 {
-  if (_mqtt_cfg.uri == nullptr)
+  if (_mqtt_cfg.broker.address.uri == nullptr)
   {
     ESP_LOGE(TAG, "MQTT URI not set.");
     return;
@@ -259,7 +258,7 @@ int PsychicMqttClient::publish(const char *topic, int qos, bool retain, const ch
 
 const char *PsychicMqttClient::getClientId()
 {
-  return _mqtt_cfg.client_id;
+  return _mqtt_cfg.credentials.client_id;
 }
 
 esp_mqtt_client_config_t *PsychicMqttClient::getMqttConfig()

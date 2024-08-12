@@ -152,7 +152,7 @@ public:
    * @param bundle The certificate bundle in PEM or DER format.
    * @return A reference to the PsychicMqttClient instance.
    */
-  PsychicMqttClient &setCACertBundle(const uint8_t *bundle);
+  PsychicMqttClient &setCACertBundle(const uint8_t *bundle, size_t bundleLen = 0);
 
   /**
    * @brief Attaches an existing CA root certificate bundle for the MQTT server. Like if you

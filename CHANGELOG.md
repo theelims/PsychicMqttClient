@@ -2,9 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.1.2] - Published in PIO Registry
+## [0.1.2] - Arduino 3 / ESP-IDF 5 compatibility
 
-- removed library.properties
+- added CI workflow
 - updated library.json
 
 ## [0.1.1] - Stability Fixes

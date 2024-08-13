@@ -19,54 +19,86 @@ PsychicMqttClient::~PsychicMqttClient()
 {
   disconnect();
   esp_mqtt_client_destroy(_client);
+  free(&_mqtt_cfg);
 }
 
 PsychicMqttClient &PsychicMqttClient::setKeepAlive(int keepAlive)
 {
+#if ESP_IDF_VERSION_MAJOR == 5
   _mqtt_cfg.session.keepalive = keepAlive;
+#else
+  _mqtt_cfg.keepalive = keepAlive;
+#endif
   return *this;
 }
 
 PsychicMqttClient &PsychicMqttClient::setAutoReconnect(bool reconnect)
 {
+#if ESP_IDF_VERSION_MAJOR == 5
   _mqtt_cfg.network.disable_auto_reconnect = !reconnect;
+#else
+  _mqtt_cfg.disable_auto_reconnect = !reconnect;
+#endif
   return *this;
 }
 
 PsychicMqttClient &PsychicMqttClient::setClientId(const char *clientId)
 {
+#if ESP_IDF_VERSION_MAJOR == 5
   _mqtt_cfg.credentials.client_id = clientId;
+#else
+  _mqtt_cfg.client_id = clientId;
+#endif
   return *this;
 }
 
 PsychicMqttClient &PsychicMqttClient::setCleanSession(bool cleanSession)
 {
+#if ESP_IDF_VERSION_MAJOR == 5
   _mqtt_cfg.session.disable_clean_session = !cleanSession;
+#else
+  _mqtt_cfg.disable_clean_session = !cleanSession;
+#endif
   return *this;
 }
 
 PsychicMqttClient &PsychicMqttClient::setBufferSize(int bufferSize)
 {
+#if ESP_IDF_VERSION_MAJOR == 5
   _mqtt_cfg.buffer.size = bufferSize;
+#else
+  _mqtt_cfg.buffer_size = bufferSize;
+#endif
   return *this;
 }
 
 PsychicMqttClient &PsychicMqttClient::setTaskStackAndPriority(int stackSize, int priority)
 {
+#if ESP_IDF_VERSION_MAJOR == 5
   _mqtt_cfg.task.stack_size = stackSize;
   _mqtt_cfg.task.priority = priority;
+#else
+  _mqtt_cfg.task_stack = stackSize;
+  _mqtt_cfg.task_prio = priority;
+#endif
   return *this;
 }
 
 PsychicMqttClient &PsychicMqttClient::setCACert(const char *rootCA, size_t rootCALen)
 {
+#if ESP_IDF_VERSION_MAJOR == 5
   _mqtt_cfg.credentials.authentication.certificate = rootCA;
   _mqtt_cfg.credentials.authentication.certificate_len = rootCALen;
+#else
+  _mqtt_cfg.cert_pem = rootCA;
+  _mqtt_cfg.cert_len = rootCALen;
+#endif
   return *this;
 }
 
 PsychicMqttClient &PsychicMqttClient::setCACertBundle(const uint8_t *bundle, size_t bundleLen)
 {
+#if ESP_IDF_VERSION_MAJOR == 5
   if (bundle != nullptr)
   {
     esp_crt_bundle_set(bundle, bundleLen);
@@ -77,41 +109,76 @@ PsychicMqttClient &PsychicMqttClient::setCACertBundle(const uint8_t *bundle, siz
     esp_crt_bundle_detach(NULL);
     _mqtt_cfg.broker.verification.crt_bundle_attach = NULL;
   }
+#else
+  if (bundle != nullptr)
+  {
+    arduino_esp_crt_bundle_set(bundle);
+    _mqtt_cfg.crt_bundle_attach = arduino_esp_crt_bundle_attach;
+  }
+  else
+  {
+    arduino_esp_crt_bundle_detach(NULL);
+    _mqtt_cfg.crt_bundle_attach = NULL;
+  }
+#endif
   return *this;
 }
 
 PsychicMqttClient &PsychicMqttClient::attachArduinoCACertBundle(bool attach)
 {
+#if ESP_IDF_VERSION_MAJOR == 5
   if (attach)
     _mqtt_cfg.broker.verification.crt_bundle_attach = esp_crt_bundle_attach;
   else
     _mqtt_cfg.broker.verification.crt_bundle_attach = NULL;
-
+#else
+  if (attach)
+    _mqtt_cfg.crt_bundle_attach = arduino_esp_crt_bundle_attach;
+  else
+    _mqtt_cfg.crt_bundle_attach = NULL;
+#endif
   return *this;
 }
 
 PsychicMqttClient &PsychicMqttClient::setCredentials(const char *username, const char *password)
 {
+#if ESP_IDF_VERSION_MAJOR == 5
   _mqtt_cfg.credentials.username = username;
   if (password != nullptr)
     _mqtt_cfg.credentials.authentication.password = password;
-
+#else
+  _mqtt_cfg.username = username;
+  if (password != nullptr)
+    _mqtt_cfg.password = password;
+#endif
   return *this;
 }
 
 PsychicMqttClient &PsychicMqttClient::setWill(const char *topic, uint8_t qos, bool retain, const char *payload, int length)
 {
+#if ESP_IDF_VERSION_MAJOR == 5
   _mqtt_cfg.session.last_will.topic = topic;
   _mqtt_cfg.session.last_will.qos = qos;
   _mqtt_cfg.session.last_will.retain = retain;
   _mqtt_cfg.session.last_will.msg_len = length;
   _mqtt_cfg.session.last_will.msg = payload;
+#else
+  _mqtt_cfg.lwt_topic = topic;
+  _mqtt_cfg.lwt_qos = qos;
+  _mqtt_cfg.lwt_retain = retain;
+  _mqtt_cfg.lwt_msg_len = length;
+  _mqtt_cfg.lwt_msg = payload;
+#endif
   return *this;
 }
 
 PsychicMqttClient &PsychicMqttClient::setServer(const char *uri)
 {
+#if ESP_IDF_VERSION_MAJOR == 5
   _mqtt_cfg.broker.address.uri = uri;
+#else
+  _mqtt_cfg.uri = uri;
+#endif
   return *this;
 }
 
@@ -174,11 +241,19 @@ bool PsychicMqttClient::connected()
 
 void PsychicMqttClient::connect()
 {
+#if ESP_IDF_VERSION_MAJOR == 5
   if (_mqtt_cfg.broker.address.uri == nullptr)
   {
     ESP_LOGE(TAG, "MQTT URI not set.");
     return;
   }
+#else
+  if (_mqtt_cfg.uri == nullptr)
+  {
+    ESP_LOGE(TAG, "MQTT URI not set.");
+    return;
+  }
+#endif
 
   if (_client == nullptr)
     _client = esp_mqtt_client_init(&_mqtt_cfg);
@@ -258,7 +333,11 @@ int PsychicMqttClient::publish(const char *topic, int qos, bool retain, const ch
 
 const char *PsychicMqttClient::getClientId()
 {
+#if ESP_IDF_VERSION_MAJOR == 5
   return _mqtt_cfg.credentials.client_id;
+#else
+  return _mqtt_cfg.client_id;
+#endif
 }
 
 esp_mqtt_client_config_t *PsychicMqttClient::getMqttConfig()

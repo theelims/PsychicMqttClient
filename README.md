@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Continuous Integration](https://github.com/theelims/PsychicMqttClient/actions/workflows/ci.yml/badge.svg)](https://github.com/theelims/PsychicMqttClient/actions/workflows/ci.yml)
+[![PlatformIO Registry](https://badges.registry.platformio.org/packages/elims/library/PsychicMqttClient.svg)](https://registry.platformio.org/libraries/elims/PsychicMqttClient)
 
 Fully featured async MQTT 3.1.1 client for ESP32 with support for SSL/TLS and MQTT over WS. Uses the ESP-IDF MQTT client library under the hood and adds a powerful but easy to use API on top of it. Supports MQTT over TCP, SSL with mbedtls, MQTT over Websocket and MQTT over Websocket Secure.
 

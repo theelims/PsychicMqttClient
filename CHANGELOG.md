@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file.
 - CI workflow
 - ESP-IDF 5 compatibility
 
-### Chanced
+### Changed
 
 - updated library.json
 

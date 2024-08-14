@@ -5,6 +5,8 @@
 .vscode
 */src/certs
 */ssl_certs
+*/logs
+/logs
 *.bin
 *.pem
 *.der

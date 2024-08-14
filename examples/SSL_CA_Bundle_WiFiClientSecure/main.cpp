@@ -95,8 +95,8 @@ void setup()
      * Attach the root certificate bundle to the WiFiClientSecure object
      * first and fetch some data from a server.
      */
-#if ESP_IDF_VERSION_MAJOR == 5
-    client.setCACert(rootca_crt_bundle_start, rootca_crt_bundle_end - rootca_crt_bundle_start);
+#if ESP_ARDUINO_VERSION_MAJOR == 3
+    client.setCACertBundle(rootca_crt_bundle_start, rootca_crt_bundle_end - rootca_crt_bundle_start);
 #else
     client.setCACertBundle(rootca_crt_bundle_start);
 #endif

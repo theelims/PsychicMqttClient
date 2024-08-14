@@ -2,9 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.1.2] - Arduino 3 / ESP-IDF 5 compatibility
+## [0.2.0] - Compatible with Arduino 3 / ESP-IDF 5
 
-- added CI workflow
+### Added
+
+- CI workflow
+- ESP-IDF 5 compatibility
+
+### Changed
+
 - updated library.json
 
 ## [0.1.1] - Stability Fixes

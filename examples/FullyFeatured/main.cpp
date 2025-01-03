@@ -23,6 +23,7 @@ const char pass[] = "pass"; // your network password
  * Load the root certificate bundle embedded by the PIO build process
  */
 extern const uint8_t rootca_crt_bundle_start[] asm("_binary_src_certs_x509_crt_bundle_bin_start");
+extern const uint8_t rootca_crt_bundle_end[] asm("_binary_src_certs_x509_crt_bundle_bin_end");
 
 const char loremIpsum[] = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, "
                           "sed diam nonumy eirmod tempor invidunt ut labore et dolor"
@@ -153,7 +154,8 @@ void setup()
      * Connect to the open MQTT broker mqtt.eclipseprojects.io with SSL/TLS enryption.
      */
     mqttClient.setServer("mqtts://mqtt.eclipseprojects.io");
-    mqttClient.setCACertBundle(rootca_crt_bundle_start);
+
+    mqttClient.setCACertBundle(rootca_crt_bundle_start, rootca_crt_bundle_end - rootca_crt_bundle_start);
     mqttClient.setBufferSize(1024);
 
     /**

@@ -19,9 +19,8 @@ All notable changes to this project will be documented in this file.
 - CI workflow
 - ESP-IDF 5 compatibility
 
-### Chanced
+### Changed
 
-- added CI workflow
 - updated library.json
 
 ## [0.1.1] - Stability Fixes

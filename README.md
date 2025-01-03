@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Continuous Integration](https://github.com/theelims/PsychicMqttClient/actions/workflows/ci.yml/badge.svg)](https://github.com/theelims/PsychicMqttClient/actions/workflows/ci.yml)
+[![PlatformIO Registry](https://badges.registry.platformio.org/packages/elims/library/PsychicMqttClient.svg)](https://registry.platformio.org/libraries/elims/PsychicMqttClient)
 
 Fully featured async MQTT 3.1.1 client for ESP32 with support for SSL/TLS and MQTT over WS. Uses the ESP-IDF MQTT client library under the hood and adds a powerful but easy to use API on top of it. Supports MQTT over TCP, SSL with mbedtls, MQTT over Websocket and MQTT over Websocket Secure.
 
@@ -13,6 +14,7 @@ The API is very similar to [AsyncMqttClient](https://github.com/marvinroger/asyn
 
 - Supports MQTT 3.1.1 with QoS 0, QoS 1 and QoS 2
 - Compatible with all ESP32 variants (ESP32, ESP32-S2, ESP32-S3, ESP32-C3, ESP32-C6, ...)
+- Supports Arduino 2 (ESP-IDF 4) and Arduino 3 (ESP-IDF 5)
 - Supports MQTT over TCP and MQTT over websocket
 - Full support for SSL/TSL encryption - for both MQTT over TCP and MQTT over WS
 - No limitation in buffer size for transmit and receive messages. Multipart messages are reassembled.
@@ -139,7 +141,7 @@ extern const uint8_t rootca_crt_bundle_end[] asm("_binary_src_certs_x509_crt_bun
 To include the bundle for the MQTT client simply call
 
 ```cpp
-mqttClient.setCACertBundle(rootca_crt_bundle_start);
+mqttClient.setCACertBundle(rootca_crt_bundle_start, rootca_crt_bundle_end - rootca_crt_bundle_start);
 ```
 
 when configuring the MQTT client instance before connecting.
@@ -150,7 +152,11 @@ If you use WiFiClientSecure in your application, it can be configured to use the
 
 ```cpp
 WiFiClientSecure client;
+#if ESP_ARDUINO_VERSION_MAJOR == 3
+client.setCACertBundle(rootca_crt_bundle_start, rootca_crt_bundle_end - rootca_crt_bundle_start);
+#else
 client.setCACertBundle(rootca_crt_bundle_start);
+#endif
 // ...
 mqttClient.attachArduinoCACertBundle();
 ```

@@ -368,7 +368,7 @@ void PsychicMqttClient::_onMessage(esp_mqtt_event_handle_t &event)
   // Check if we are dealing with a simple message
   if (event->total_data_len == event->data_len)
   {
-    ESP_LOGI(TAG, "MQTT_EVENT_DATA_SINGLE");
+    ESP_LOGV(TAG, "MQTT_EVENT_DATA_SINGLE");
     // Copy the characters from data->data_ptr to c-string
     char payload[event->data_len + 1];
     strncpy(payload, (char *)event->data, event->data_len);
@@ -392,7 +392,7 @@ void PsychicMqttClient::_onMessage(esp_mqtt_event_handle_t &event)
   // Check if we are dealing with a first multipart message
   else if (event->current_data_offset == 0)
   {
-    ESP_LOGI(TAG, "MQTT_EVENT_DATA_MULTIPART_FIRST");
+    ESP_LOGV(TAG, "MQTT_EVENT_DATA_MULTIPART_FIRST");
     // Allocate memory for the buffer
     _buffer = (char *)malloc(event->total_data_len + 1);
     // Copy the characters from even->data to _buffer
@@ -407,7 +407,7 @@ void PsychicMqttClient::_onMessage(esp_mqtt_event_handle_t &event)
   // Check if we are on the last message
   else if (event->current_data_offset + event->data_len == event->total_data_len)
   {
-    ESP_LOGI(TAG, "MQTT_EVENT_DATA_MULTIPART_LAST");
+    ESP_LOGV(TAG, "MQTT_EVENT_DATA_MULTIPART_LAST");
     // Copy the characters from even->data to _buffer
     strncpy(_buffer + event->current_data_offset, (char *)event->data, event->data_len);
     _buffer[event->total_data_len] = '\0';
@@ -432,7 +432,7 @@ void PsychicMqttClient::_onMessage(esp_mqtt_event_handle_t &event)
   {
     // copy the characters from even->data to _buffer
     strncpy(_buffer + event->current_data_offset, (char *)event->data, event->data_len);
-    ESP_LOGI(TAG, "MQTT_EVENT_DATA_MULTIPART");
+    ESP_LOGV(TAG, "MQTT_EVENT_DATA_MULTIPART");
   }
 }
 
@@ -464,41 +464,68 @@ void PsychicMqttClient::_onError(esp_mqtt_event_handle_t &event)
 
 bool PsychicMqttClient::_isTopicMatch(const char *topic, const char *subscription)
 {
-  ESP_LOGV(TAG, "Match topic: %s with subscription: %s", topic, subscription);
+  ESP_LOGD(TAG, "Match topic: %s with subscription: %s", topic, subscription);
 
-  // make local copies of the topic and subscription so we're not modifying the originals
-  char topicCopy[strlen(topic) + 1];
-  strcpy(topicCopy, topic);
-  char subscriptionCopy[strlen(subscription) + 1];
-  strcpy(subscriptionCopy, subscription);
+  String topicStr(topic);
+  String subscriptionStr(subscription);
 
-  // Check if the topic is a wildcard
-  if (strcmp(subscriptionCopy, "#") == 0 || strcmp(subscriptionCopy, "+") == 0)
+  // Check if the subscription is a pure wildcard
+  if (subscriptionStr == "#" || subscriptionStr == "+")
   {
+    ESP_LOGV(TAG, "Subscription is a pure wildcard --> MATCH");
     return true;
   }
 
   // Check if the topic is a simple match
-  if (strcmp(topicCopy, subscriptionCopy) == 0)
+  if (topicStr == subscriptionStr)
   {
+    ESP_LOGV(TAG, "Topic is a direct match --> MATCH");
     return true;
   }
 
-  // Check if the topic is a wildcard match
-  char *topicToken = strtok((char *)topicCopy, "/");
-  char *subscriptionToken = strtok((char *)subscriptionCopy, "/");
-  while (topicToken != NULL && subscriptionToken != NULL)
+  // Split the topic and subscription into tokens
+  int topicIndex = 0;
+  int subscriptionIndex = 0;
+  int lastTopicIndex = topicStr.lastIndexOf('/');
+  int lastSubscriptionIndex = subscriptionStr.lastIndexOf('/');
+  String topicToken = topicStr.substring(topicIndex, topicStr.indexOf('/', topicIndex));
+  String subscriptionToken = subscriptionStr.substring(subscriptionIndex, subscriptionStr.indexOf('/', subscriptionIndex));
+
+  ESP_LOGV(TAG, "Initial topic token: %s, subscription token: %s", topicToken.c_str(), subscriptionToken.c_str());
+  ESP_LOGV(TAG, "Last topic index: %d, last subscription index: %d", lastTopicIndex, lastSubscriptionIndex);
+
+  while (topicToken.length() > 0 && subscriptionToken.length() > 0)
   {
-    if (strcmp(subscriptionToken, "#") == 0)
+    ESP_LOGV(TAG, "Comparing topic token: %s with subscription token: %s", topicToken.c_str(), subscriptionToken.c_str());
+
+    if (subscriptionToken == "#")
     {
+      ESP_LOGV(TAG, "Subscription token is # --> MATCH");
       return true;
     }
-    if (strcmp(subscriptionToken, "+") != 0 && strcmp(topicToken, subscriptionToken) != 0)
+    if (subscriptionToken != "+" && topicToken != subscriptionToken)
     {
+      ESP_LOGV(TAG, "Tokens do not match and subscription token is not + --> NO MATCH");
       return false;
     }
-    topicToken = strtok(NULL, "/");
-    subscriptionToken = strtok(NULL, "/");
+
+    ESP_LOGV(TAG, "Current token index: topic: %d, subscription: %d", topicIndex, subscriptionIndex);
+    if (topicIndex == lastTopicIndex + 1 || subscriptionIndex == lastSubscriptionIndex + 1)
+    {
+      ESP_LOGV(TAG, "End of tokens. Topic: %s, Subscription: %s", topicStr.substring(topicIndex).c_str(), subscriptionStr.substring(subscriptionIndex).c_str());
+      bool match = ((subscriptionToken == "+" && topicIndex == lastTopicIndex + 1) || topicStr.substring(topicIndex) == subscriptionStr.substring(subscriptionIndex));
+      ESP_LOGV(TAG, "End of tokens. Match: %s", match ? "true" : "false");
+      return match;
+    }
+
+    topicIndex = topicStr.indexOf('/', topicIndex) + 1;
+    subscriptionIndex = subscriptionStr.indexOf('/', subscriptionIndex) + 1;
+    ESP_LOGV(TAG, "Next token index: topic: %d, subscription: %d", topicIndex, subscriptionIndex);
+    topicToken = topicStr.substring(topicIndex, topicStr.indexOf('/', topicIndex));
+    subscriptionToken = subscriptionStr.substring(subscriptionIndex, subscriptionStr.indexOf('/', subscriptionIndex));
+
+    ESP_LOGV(TAG, "Next topic token: %s, subscription token: %s", topicToken.c_str(), subscriptionToken.c_str());
   }
-  return topicToken == NULL && subscriptionToken == NULL;
+
+  return false;
 }

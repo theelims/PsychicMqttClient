@@ -8,4 +8,6 @@
 *.bin
 *.pem
 *.der
+*.log
+/logs
 

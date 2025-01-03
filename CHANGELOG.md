@@ -2,7 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.1.2] - Arduino 3 / ESP-IDF 5 compatibility
+## [0.2.1] - Fixing Wildcard Behavior
+
+### Changed
+
+- Issue [6](https://github.com/theelims/PsychicMqttClient/issues/6) was fixed.
+
+### Added
+
+- Example for wildcards in topics.
+
+## [0.2.0] - Compatible with Arduino 3 / ESP-IDF 5
+
+### Added
+
+- CI workflow
+- ESP-IDF 5 compatibility
+
+### Chanced
 
 - added CI workflow
 - updated library.json

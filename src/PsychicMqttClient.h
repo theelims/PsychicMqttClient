@@ -38,10 +38,10 @@
 #include "mqtt_client.h"
 #include "esp_crt_bundle.h"
 
-#define PSYCHIC_MQTT_CLIENT_VERSION_STR "0.1.2"
+#define PSYCHIC_MQTT_CLIENT_VERSION_STR "0.2.1"
 #define PSYCHIC_MQTT_CLIENT_VERSION_MAJOR 0
-#define PSYCHIC_MQTT_CLIENT_VERSION_MINOR 1
-#define PSYCHIC_MQTT_CLIENT_VERSION_PATCH 2
+#define PSYCHIC_MQTT_CLIENT_VERSION_MINOR 2
+#define PSYCHIC_MQTT_CLIENT_VERSION_PATCH 1
 
 #ifndef ARDUINO_ARCH_ESP32
 #error "This library only supports boards with an ESP32 processor."

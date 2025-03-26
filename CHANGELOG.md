@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.2] - Various Fixes
+
+### Fixed
+
+- Issue [14](https://github.com/theelims/PsychicMqttClient/issues/14) was fixed.
+- Issue [13](https://github.com/theelims/PsychicMqttClient/issues/13) was fixed.
+
+### Added
+
+- The function `forceStop()` was added to address issue [12](https://github.com/theelims/PsychicMqttClient/issues/12).
+
 ## [0.2.1] - Fixing Wildcard Behavior
 
 ### Changed

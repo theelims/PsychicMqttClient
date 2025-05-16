@@ -25,6 +25,9 @@ The API is very similar to [AsyncMqttClient](https://github.com/marvinroger/asyn
 - Handles reconnects automatically
 - Automatically embeds a X509 Root CA Bundle into the binary on platformio
 
+> [!IMPORTANT]
+> This library does not compile with the Arduino IDE. It requires the build system of [platformio](https://platformio.org/) or [pioarduino](https://github.com/pioarduino/platform-espressif32).
+
 ## Usage
 
 MQTT has never been easier to use. Instantiate the MQTT client, set the server URI, and subscribe to a topic with the `onTopic()` event handler. Easy to use with a lambda function where you can work with the received payload. Connect the MQTT client to the server and you're set. Publish works as expected from any other MQTT client.

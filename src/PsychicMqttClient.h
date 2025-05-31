@@ -173,6 +173,18 @@ public:
     PsychicMqttClient &setCredentials(const char *username, const char *password = nullptr);
 
     /**
+     * @brief Authenticate via mutual X.509 certificate.
+     *
+     * @param clientCert The X.509 certificate issued from the same CA as the server cert.
+     * @param clientKey The private key for the X.509 certificate.
+     * @param clientCertLen Optional length of the client certificate. If the certificate is not null-terminated.
+     * @param clientKeyLen Optional length of the client key. If the key is not null-terminated.
+     * @return A reference to the PsychicMqttClient instance.
+     */
+    PsychicMqttClient &setClientCertificate(const char *clientCert, const char *clientKey, size_t clientCertLen = 0,
+        size_t clientKeyLen = 0);
+
+    /**
      * @brief Sets the last will and testament for the MQTT connection.
      *
      * @param topic The topic for the last will and testament.

@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [WIP] - Various Fixes and Certificate Validation
+
+### Fixed
+
+- Issue [16](https://github.com/theelims/PsychicMqttClient/issues/16) was fixed.
+
+### Added
+
+- PR [17](https://github.com/theelims/PsychicMqttClient/pull/17) adds functionality to authenticate via client key + certificate.
+
 ## [0.2.2] - Various Fixes
 
 ### Fixed

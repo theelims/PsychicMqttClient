@@ -178,7 +178,7 @@ PsychicMqttClient &PsychicMqttClient::setCredentials(const char *username, const
 }
 
 PsychicMqttClient &PsychicMqttClient::setClientCertificate(const char *clientCert, const char *clientKey,
-    size_t clientCertLen, size_t clientKeyLen)
+                                                           size_t clientCertLen, size_t clientKeyLen)
 {
 #if ESP_IDF_VERSION_MAJOR == 5
     _mqtt_cfg.credentials.authentication.certificate = clientCert;
@@ -559,7 +559,9 @@ void PsychicMqttClient::_onMessage(esp_mqtt_event_handle_t &event)
 
         // Free the memory
         free(_buffer);
+        _buffer = nullptr;
         free(_topic);
+        _topic = nullptr;
     }
 
     // Otherwise, we are in the middle of the message

@@ -177,6 +177,23 @@ PsychicMqttClient &PsychicMqttClient::setCredentials(const char *username, const
     return *this;
 }
 
+PsychicMqttClient &PsychicMqttClient::setClientCertificate(const char *clientCert, const char *clientKey,
+    size_t clientCertLen, size_t clientKeyLen)
+{
+#if ESP_IDF_VERSION_MAJOR == 5
+    _mqtt_cfg.credentials.authentication.certificate = clientCert;
+    _mqtt_cfg.credentials.authentication.key = clientKey;
+    _mqtt_cfg.credentials.authentication.certificate_len = clientCertLen;
+    _mqtt_cfg.credentials.authentication.key_len = clientKeyLen;
+#else
+    _mqtt_cfg.client_cert_pem = clientCert;
+    _mqtt_cfg.client_key_pem = clientKey;
+    _mqtt_cfg.client_cert_len = clientCertLen;
+    _mqtt_cfg.client_key_len = clientKeyLen;
+#endif
+    return *this;
+}
+
 PsychicMqttClient &PsychicMqttClient::setWill(const char *topic, uint8_t qos, bool retain, const char *payload, int length)
 {
 #if ESP_IDF_VERSION_MAJOR == 5

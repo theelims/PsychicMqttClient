@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [WIP] - Various Fixes and Certificate Validation
+## [0.2.3] - Various Fixes and Certificate Validation
 
 ### Fixed
 

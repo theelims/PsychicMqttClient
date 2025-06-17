@@ -23,6 +23,7 @@ const char pass[] = "pass"; // your network password
  * Load the root certificate bundle embedded by the PIO build process
  */
 extern const uint8_t rootca_crt_bundle_start[] asm("_binary_src_certs_x509_crt_bundle_bin_start");
+extern const uint8_t rootca_crt_bundle_end[] asm("_binary_src_certs_x509_crt_bundle_bin_end");
 
 /**
  * Create a PsychicMqttClient object
@@ -51,7 +52,12 @@ void setup()
      * Connect to the open MQTT broker mqtt.eclipseprojects.io with SSL/TLS enryption.
      */
     mqttClient.setServer("mqtts://mqtt.eclipseprojects.io");
+
+#if ESP_ARDUINO_VERSION_MAJOR == 3
+    mqttClient.setCACertBundle(rootca_crt_bundle_start, rootca_crt_bundle_end - rootca_crt_bundle_start);
+#else
     mqttClient.setCACertBundle(rootca_crt_bundle_start);
+#endif
 
     /**
      * Lambda callback function for onTopic Event Handler

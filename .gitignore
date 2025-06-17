@@ -11,5 +11,6 @@
 *.pem
 *.der
 *.log
+*.tar.gz
 /logs
 

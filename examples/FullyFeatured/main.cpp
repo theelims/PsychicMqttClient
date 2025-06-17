@@ -155,7 +155,12 @@ void setup()
      */
     mqttClient.setServer("mqtts://mqtt.eclipseprojects.io");
 
+#if ESP_ARDUINO_VERSION_MAJOR == 3
     mqttClient.setCACertBundle(rootca_crt_bundle_start, rootca_crt_bundle_end - rootca_crt_bundle_start);
+#else
+    mqttClient.setCACertBundle(rootca_crt_bundle_start);
+#endif
+
     mqttClient.setBufferSize(1024);
 
     /**

@@ -171,13 +171,13 @@ Otherwise the bundle will be overwritten by the MQTT client with unwanted side e
 
 ## Advanced Usage
 
-Check the commented header file and the `FullyFeatured` example for a complete list of all event handlers and configuration options. You can even get access to the ESP-IDF MQTT Clients' configuration object, should you need parameters not broken out to the API.
+Check the [documentation](/documentation.md) or the commented header file and the `FullyFeatured` example for a complete list of all event handlers and configuration options. You can even get access to the ESP-IDF MQTT Clients' configuration object, should you need parameters not broken out to the API.
 
 ## License
 
 MIT License
 
-Copyright (c) 2024 elims
+Copyright (c) 2025 elims
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

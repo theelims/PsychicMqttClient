@@ -5,7 +5,7 @@
  *
  *   Please change the ssid and pass to your actual WiFi credentials.
  *
- *   This example uses the public MQTT broker mqtt.eclipseprojects.io,
+ *   This example uses the public MQTT broker broker.hivemq.com,
  *   registers a onTopic callback function subscribed to a unique topic
  *   and publishes a message to that topic. The echoed message payload will be
  *   printed to the serial monitor.
@@ -151,9 +151,9 @@ void setup()
     Serial.printf("\r\nConnected, IP address: %s \r\n", WiFi.localIP().toString().c_str());
 
     /**
-     * Connect to the open MQTT broker mqtt.eclipseprojects.io with SSL/TLS enryption.
+     * Connect to the open MQTT broker broker.hivemq.com with SSL/TLS enryption.
      */
-    mqttClient.setServer("mqtts://mqtt.eclipseprojects.io");
+    mqttClient.setServer("mqtts://broker.hivemq.com");
 
 #if ESP_ARDUINO_VERSION_MAJOR == 3
     mqttClient.setCACertBundle(rootca_crt_bundle_start, rootca_crt_bundle_end - rootca_crt_bundle_start);

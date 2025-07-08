@@ -5,7 +5,7 @@
  *
  *   Please change the ssid and pass to your actual WiFi credentials.
  *
- *   This example uses the public MQTT broker mqtt.eclipseprojects.io,
+ *   This example uses the public MQTT broker broker.hivemq.com,
  *   registers a onTopic callback function subscribed to a unique topic
  *   and publishes a message to that topic. The echoed message payload will be
  *   printed to the serial monitor.
@@ -43,9 +43,9 @@ void setup()
     Serial.printf("\r\nConnected, IP address: %s \r\n", WiFi.localIP().toString().c_str());
 
     /**
-     * Connect to the open MQTT broker mqtt.eclipseprojects.io over websocket.
+     * Connect to the open MQTT broker broker.hivemq.com over websocket.
      */
-    mqttClient.setServer("ws://mqtt.eclipseprojects.io:80/mqtt");
+    mqttClient.setServer("ws://broker.hivemq.com:80/mqtt");
 
     /**
      * Lambda callback function for onTopic Event Handler

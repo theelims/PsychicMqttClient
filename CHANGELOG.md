@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - Binary payloads truncated by strcpy and switched to memcpy [18](https://github.com/theelims/PsychicMqttClient/pull/18)
 
+### Changed
+
+- Replaced `mqtt.eclipseprojects.io` with `broker.hivemq.com`
+
 ## [0.2.3] - Various Fixes and Certificate Validation
 
 ### Fixed

@@ -1,6 +1,6 @@
 #include "PsychicMqttClient.h"
 
-static const char *TAG = "PsychicMqttClient";
+static const char *TAG = "🐙";
 
 static void log_error_if_nonzero(const char *message, int error_code)
 {

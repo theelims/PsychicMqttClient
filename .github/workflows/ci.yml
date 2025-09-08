@@ -27,7 +27,7 @@ jobs:
   #         path: ~/.cache/pip
 
   #     - name: Pyhton
-  #       uses: actions/setup-python@v5
+  #       uses: actions/setup-python@v6
   #       with:
   #         python-version: "3.x"
 
@@ -50,7 +50,7 @@ jobs:
         with:
           key: pip
           path: ~/.cache/pip
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.x"
       - name: Install PlatformIO
@@ -89,7 +89,7 @@ jobs:
             ~/.platformio
             ~/.cache/pip
           key: pio-${{ matrix.example }}-${{ matrix.environment }}
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.x"
       - run: python -m pip install --upgrade pip

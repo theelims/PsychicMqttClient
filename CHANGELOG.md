@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - Binary payloads truncated by strcpy and switched to memcpy [18](https://github.com/theelims/PsychicMqttClient/pull/18)
+- Fixed broken link to Adafruit cert repository
 
 ### Changed
 

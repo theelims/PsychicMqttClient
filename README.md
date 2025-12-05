@@ -26,7 +26,7 @@ The API is very similar to [AsyncMqttClient](https://github.com/marvinroger/asyn
 - Automatically embeds a X509 Root CA Bundle into the binary on platformio
 
 > [!IMPORTANT]
-> This library does not compile with the Arduino IDE. It requires the build system of [platformio](https://platformio.org/) or [pioarduino](https://github.com/pioarduino/platform-espressif32).
+> This library is not actively tested with the Arduino IDE, but reported to compile. If the SSL certificates shall be bundled it requires the build system of [platformio](https://platformio.org/) or [pioarduino](https://github.com/pioarduino/platform-espressif32).
 
 ## Usage
 
